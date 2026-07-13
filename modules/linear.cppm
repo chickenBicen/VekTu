@@ -4,6 +4,8 @@ import Common;
 import Vec2;
 import Vec3;
 import Vec4;
+import Mat2;
+import Mat3;
 
 export template <VectorElement T> Vec2<T> VecFromAToB(const Vec2<T>& a, const Vec2<T>& b)
 { return b - a; }
