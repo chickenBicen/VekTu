@@ -33,13 +33,14 @@ target_sources(VekTu
     PUBLIC
         FILE_SET CXX_MODULES
         FILES
-        modules/Common.cppm
-            modules/Vec2.cppm
-            modules/Vec3.cppm
-            modules/Vec4.cppm   
+            modules/Common.cppm
             modules/linear.cppm
-            modules/Mat2.cppm
-            modules/Mat3.cppm
+            modules/Linear/Vec2.cppm
+            modules/Linear/Vec3.cppm
+            modules/Linear/Vec4.cppm   
+            modules/Linear/Mat2.cppm
+            modules/Linear/Mat3.cppm
+            modules/Geometry/Shapes.cppm
             
 )
 
@@ -47,3 +48,5 @@ target_include_directories(
     VekTu
     PRIVATE ${PROJECT_SOURCE_DIR}/includes
 )
+
+
