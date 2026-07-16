@@ -1,9 +1,7 @@
 #include <iostream>
-import Vec2;
-import Vec3;
+void runVec2Tests();
 int main()
 {
-    Vec2i bleh{6, 0};
-
-    std::cout << bleh.x << "\n";
+    runVec2Tests();
+    return 0;
 }
