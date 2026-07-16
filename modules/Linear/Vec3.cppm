@@ -21,15 +21,18 @@ export template <VectorElement T> struct Vec3
     void normalize()
     {
         auto m = mag();
-        if (!nearlyEqual(m, 0)) { *this = *this / m; }
+        if (!nearlyEqual(m, 0)) {
+            *this = *this / m;
+        }
     }
 
 
     [[nodiscard]] Vec3 cross(const Vec3& other) const
-    { return {y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x}; }
+    {
+        return {y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x};
+    }
 
-    [[nodiscard]] T dot(const Vec3& other) const
-    { return (x * other.x) + (y * other.y) + (z * other.z); }
+    [[nodiscard]] T dot(const Vec3& other) const { return (x * other.x) + (y * other.y) + (z * other.z); }
 
     [[nodiscard]] T dist(const Vec3& other) const { return (other - *this).mag(); }
 
@@ -105,13 +108,17 @@ export template <VectorElement T> struct Vec3
     }
 };
 
-template <VectorElement T> Vec3<T> operator+(const Vec3<T>& a, const Vec3<T>& b)
-{ return {a.x + b.x, a.y + b.y, a.z + b.z}; }
+export template <VectorElement T> Vec3<T> operator+(const Vec3<T>& a, const Vec3<T>& b)
+{
+    return {a.x + b.x, a.y + b.y, a.z + b.z};
+}
 
-template <VectorElement T> bool operator==(const Vec3<T>& a, const Vec3<T>& b)
-{ return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y) && nearlyEqual(a.z, b.z); }
+export template <VectorElement T> bool operator==(const Vec3<T>& a, const Vec3<T>& b)
+{
+    return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y) && nearlyEqual(a.z, b.z);
+}
 
-template <VectorElement T> bool operator!=(const Vec3<T>& a, const Vec3<T>& b) { return !(a == b); }
+export template <VectorElement T> bool operator!=(const Vec3<T>& a, const Vec3<T>& b) { return !(a == b); }
 
 export using Vec3i = Vec3<int>;
 export using Vec3f = Vec3<float>;

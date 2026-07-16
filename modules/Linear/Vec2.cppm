@@ -7,6 +7,7 @@ export module Vec2;
 
 import Common;
 
+
 /**
  * @brief 2d vector implementation for graphics and positioning. Only accepts "Vector elements"
  * which are types that can do basic arithmetic operations
@@ -31,7 +32,9 @@ export template <VectorElement T> struct Vec2
     void normalize()
     {
         auto m = mag();
-        if (!nearlyEqual(m, 0)) { *this = *this / m; }
+        if (!nearlyEqual(m, 0)) {
+            *this = *this / m;
+        }
     }
 
     [[nodiscard]] T sprojection(const Vec2& other) const { return dot(other) / other.mag(); }
@@ -53,8 +56,9 @@ export template <VectorElement T> struct Vec2
 
     Vec2 operator-(const Vec2& other) const { return Vec2(x - other.x, y - other.y); }
     Vec2 operator-() const { return Vec2(-x, -y); }
-    Vec2 operator*(const T scalar) const { return {x * scalar, y * scalar}; }
-    Vec2 operator/(const T scalar) const { return {x / scalar, y / scalar}; }
+
+    template <typename U> Vec2 operator*(const U scalar) const { return {T(x * scalar), T(y * scalar)}; }
+    template <typename U> Vec2 operator/(const U scalar) const { return {T(x / scalar), T(y / scalar)}; }
 
     Vec2& operator+=(const Vec2& other)
     {
@@ -81,18 +85,37 @@ export template <VectorElement T> struct Vec2
 
     // TODO: add operators for matrices and transformations.
     static Vec2<T> lerp(const Vec2<T>& start, const Vec2<T> end, const double percent)
-    { return start * (1 - percent) + end * percent; }
+    {
+        return start * (1 - percent) + end * percent;
+    }
 };
 
-template <VectorElement T> Vec2<T> operator*(const T scalar, const Vec2<T>& v)
-{ return {v.x * scalar, v.y * scalar}; }
-template <VectorElement T> Vec2<T> operator+(const Vec2<T>& a, const Vec2<T>& b)
-{ return {a.x + b.x, a.y + b.y}; }
+export template <VectorElement T> Vec2<T> operator*(const T scalar, const Vec2<T>& v)
+{
+    return {v.x * scalar, v.y * scalar};
+}
 
-template <VectorElement T> bool operator==(const Vec2<T>& a, const Vec2<T>& b)
-{ return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y); }
+export template <VectorElement T> Vec2<T> operator+(const Vec2<T>& a, const Vec2<T>& b)
+{
+    return {a.x + b.x, a.y + b.y};
+}
 
-template <VectorElement T> bool operator!=(const Vec2<T>& a, const Vec2<T>& b) { return !(a == b); }
+export template <VectorElement T, typename U> Vec2<T> operator+(const Vec2<T>& a, const U scalar)
+{
+    return {a.x + scalar, a.y + scalar};
+}
+
+export template <VectorElement T> bool operator==(const Vec2<T>& a, const Vec2<T>& b)
+{
+    if constexpr (std::floating_point<T>) {
+        return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y);
+
+    } else {
+        return a.x == b.x && a.y == b.y;
+    }
+}
+
+export template <VectorElement T> bool operator!=(const Vec2<T>& a, const Vec2<T>& b) { return !(a == b); }
 
 export using Vec2i = Vec2<int>;
 export using Vec2f = Vec2<float>;

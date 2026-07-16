@@ -21,12 +21,16 @@ export template <VectorElement T> struct Vec4
     void normalize()
     {
         auto m = mag();
-        if (!nearlyEqual(m, 0)) { *this = *this / m; }
+        if (!nearlyEqual(m, 0)) {
+            *this = *this / m;
+        }
     }
 
 
     [[nodiscard]] T dot(const Vec4& other) const
-    { return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w); }
+    {
+        return (x * other.x) + (y * other.y) + (z * other.z) + (w * other.w);
+    }
 
     [[nodiscard]] T distance(const Vec4& other) const { return (other - *this).mag(); }
 
@@ -49,14 +53,11 @@ export template <VectorElement T> struct Vec4
     }
 
 
-    Vec4 operator-(const Vec4 other) const
-    { return {x - other.x, y - other.y, z - other.z, w - other.w}; }
+    Vec4 operator-(const Vec4 other) const { return {x - other.x, y - other.y, z - other.z, w - other.w}; }
 
-    Vec4 operator*(const T scalar) const
-    { return {x * scalar, y * scalar, z * scalar, w * scalar}; }
+    Vec4 operator*(const T scalar) const { return {x * scalar, y * scalar, z * scalar, w * scalar}; }
 
-    Vec4 operator/(const T scalar) const
-    { return {x / scalar, y / scalar, z / scalar, w / scalar}; }
+    Vec4 operator/(const T scalar) const { return {x / scalar, y / scalar, z / scalar, w / scalar}; }
 
 
     Vec4& operator-=(const T value)
@@ -96,16 +97,17 @@ export template <VectorElement T> struct Vec4
     }
 };
 
-template <VectorElement T> bool operator==(const Vec4<T>& a, const Vec4<T>& b)
+export template <VectorElement T> bool operator==(const Vec4<T>& a, const Vec4<T>& b)
 {
-    return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y) && nearlyEqual(a.z, b.z) &&
-           nearlyEqual(a.w, b.w);
+    return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y) && nearlyEqual(a.z, b.z) && nearlyEqual(a.w, b.w);
 }
 
-template <VectorElement T> bool operator!=(const Vec4<T>& a, const Vec4<T>& b) { return !(a == b); }
+export template <VectorElement T> bool operator!=(const Vec4<T>& a, const Vec4<T>& b) { return !(a == b); }
 
-template <VectorElement T> Vec4<T> operator+(const Vec4<T>& a, const Vec4<T> b)
-{ return {a.x + b.x, a.y + b.y, a.z + b.y, a.z + b.z, a.w + b.w}; }
+export template <VectorElement T> Vec4<T> operator+(const Vec4<T>& a, const Vec4<T> b)
+{
+    return {a.x + b.x, a.y + b.y, a.z + b.y, a.z + b.z, a.w + b.w};
+}
 
 export using Vec4i = Vec4<int>;
 export using Vec4f = Vec4<float>;

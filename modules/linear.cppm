@@ -1,5 +1,5 @@
 module;
-export module linear;
+export module Linear;
 import Common;
 import Vec2;
 import Vec3;
