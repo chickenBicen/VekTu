@@ -1,17 +1,14 @@
-module;
+#pragma once
+
+#include "Mat2.h"
+#include "Vec3.h"
+#include "VekTu/Common.h"
 
 #include <cassert>
 #include <cmath>
 #include <cstdint>
 
-export module Mat3;
-
-import Common;
-import Vec2;
-import Vec3;
-import Mat2;
-
-export template <VectorElement T> struct Mat3
+template <VectorElement T> struct Mat3
 {
     std::array<T, 9> data;
 
@@ -179,7 +176,7 @@ export template <VectorElement T> struct Mat3
     }
 };
 
-export template <VectorElement T> Mat3<T> operator+(const Mat3<T>& first, const Mat3<T>& second)
+template <VectorElement T> Mat3<T> operator+(const Mat3<T>& first, const Mat3<T>& second)
 {
     return {
         first[0] + second[0],
@@ -194,10 +191,10 @@ export template <VectorElement T> Mat3<T> operator+(const Mat3<T>& first, const 
     };
 }
 
-export template <VectorElement T> Mat3<T> operator*(T scalar, const Mat3<T>& matrix) { return matrix * scalar; }
+template <VectorElement T> Mat3<T> operator*(T scalar, const Mat3<T>& matrix) { return matrix * scalar; }
 
 
-export template <VectorElement T> Vec3<T> operator*(const Mat3<T>& matrix, const Vec3<T>& vector)
+template <VectorElement T> Vec3<T> operator*(const Mat3<T>& matrix, const Vec3<T>& vector)
 {
     Vec3<T> v = vector;
     v.x = matrix[0] * vector.x + matrix[1] * vector.y + matrix[2] * vector.z;
@@ -206,7 +203,7 @@ export template <VectorElement T> Vec3<T> operator*(const Mat3<T>& matrix, const
     return v;
 }
 
-export using Mat3i = Mat3<int>;
-export using Mat3f = Mat3<float>;
-export using Mat3d = Mat3<double>;
-export using Mat3b = Mat3<uint8_t>;
+using Mat3i = Mat3<int>;
+using Mat3f = Mat3<float>;
+using Mat3d = Mat3<double>;
+using Mat3b = Mat3<uint8_t>;

@@ -1,13 +1,11 @@
-module;
+#pragma once
+
+#include "VekTu/Common.h"
 
 #include <cmath>
 #include <cstdint>
 
-export module Vec4;
-
-import Common;
-
-export template <VectorElement T> struct Vec4
+template <VectorElement T> struct Vec4
 {
     T x, y, z, w;
 
@@ -97,19 +95,19 @@ export template <VectorElement T> struct Vec4
     }
 };
 
-export template <VectorElement T> bool operator==(const Vec4<T>& a, const Vec4<T>& b)
+template <VectorElement T> bool operator==(const Vec4<T>& a, const Vec4<T>& b)
 {
     return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y) && nearlyEqual(a.z, b.z) && nearlyEqual(a.w, b.w);
 }
 
-export template <VectorElement T> bool operator!=(const Vec4<T>& a, const Vec4<T>& b) { return !(a == b); }
+template <VectorElement T> bool operator!=(const Vec4<T>& a, const Vec4<T>& b) { return !(a == b); }
 
-export template <VectorElement T> Vec4<T> operator+(const Vec4<T>& a, const Vec4<T> b)
+template <VectorElement T> Vec4<T> operator+(const Vec4<T>& a, const Vec4<T> b)
 {
     return {a.x + b.x, a.y + b.y, a.z + b.y, a.z + b.z, a.w + b.w};
 }
 
-export using Vec4i = Vec4<int>;
-export using Vec4f = Vec4<float>;
-export using Vec4d = Vec4<double>;
-export using Vec4u = Vec4<uint32_t>;
+using Vec4i = Vec4<int>;
+using Vec4f = Vec4<float>;
+using Vec4d = Vec4<double>;
+using Vec4u = Vec4<uint32_t>;

@@ -1,18 +1,14 @@
-module;
+#pragma once
+#include "VekTu/Common.h"
 
 #include <cmath>
 #include <cstdint>
-
-export module Vec2;
-
-import Common;
-
 
 /**
  * @brief 2d vector implementation for graphics and positioning. Only accepts "Vector elements"
  * which are types that can do basic arithmetic operations
  */
-export template <VectorElement T> struct Vec2
+template <VectorElement T> struct Vec2
 {
     T x, y;
 
@@ -90,22 +86,19 @@ export template <VectorElement T> struct Vec2
     }
 };
 
-export template <VectorElement T> Vec2<T> operator*(const T scalar, const Vec2<T>& v)
+template <VectorElement T> Vec2<T> operator*(const T scalar, const Vec2<T>& v)
 {
     return {v.x * scalar, v.y * scalar};
 }
 
-export template <VectorElement T> Vec2<T> operator+(const Vec2<T>& a, const Vec2<T>& b)
-{
-    return {a.x + b.x, a.y + b.y};
-}
+template <VectorElement T> Vec2<T> operator+(const Vec2<T>& a, const Vec2<T>& b) { return {a.x + b.x, a.y + b.y}; }
 
-export template <VectorElement T, typename U> Vec2<T> operator+(const Vec2<T>& a, const U scalar)
+template <VectorElement T, typename U> Vec2<T> operator+(const Vec2<T>& a, const U scalar)
 {
     return {a.x + scalar, a.y + scalar};
 }
 
-export template <VectorElement T> bool operator==(const Vec2<T>& a, const Vec2<T>& b)
+template <VectorElement T> bool operator==(const Vec2<T>& a, const Vec2<T>& b)
 {
     if constexpr (std::floating_point<T>) {
         return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y);
@@ -115,9 +108,9 @@ export template <VectorElement T> bool operator==(const Vec2<T>& a, const Vec2<T
     }
 }
 
-export template <VectorElement T> bool operator!=(const Vec2<T>& a, const Vec2<T>& b) { return !(a == b); }
+template <VectorElement T> bool operator!=(const Vec2<T>& a, const Vec2<T>& b) { return !(a == b); }
 
-export using Vec2i = Vec2<int>;
-export using Vec2f = Vec2<float>;
-export using Vec2d = Vec2<double>;
-export using Vec2u = Vec2<uint32_t>;
+using Vec2i = Vec2<int>;
+using Vec2f = Vec2<float>;
+using Vec2d = Vec2<double>;
+using Vec2u = Vec2<uint32_t>;

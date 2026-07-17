@@ -27,30 +27,21 @@ set(PROJECT_VERSION
 )
 message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION}")
 
+add_subdirectory(test)
 add_library(
-    VekTu
+    VekTu INTERFACE
 )
 
-target_sources(VekTu
-    PUBLIC
-        FILE_SET CXX_MODULES
-        TYPE CXX_MODULES
-        BASE_DIRS
-            include
-        FILES
-            include/VekTu/Common.cppm
-            include/VekTu/linear.cppm
-            include/VekTu/Linear/Vec2.cppm
-            include/VekTu/Linear/Vec3.cppm
-            include/VekTu/Linear/Vec4.cppm
-            include/VekTu/Linear/Mat2.cppm
-            include/VekTu/Linear/Mat3.cppm
-            include/VekTu/Geometry/Shapes.cppm
+target_sources(VekTu INTERFACE
+    FILE_SET HEADERS
+    BASE_DIRS include
+    FILES
+        include/VekTu/Common.h
+        include/VekTu/Linear/Vec2.h
 )
-
 target_include_directories(
     VekTu
-    PUBLIC
+    INTERFACE
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
@@ -58,7 +49,7 @@ target_include_directories(
 install(
     TARGETS VekTu
     EXPORT VekTuTargets
-    FILE_SET CXX_MODULES
+    FILE_SET HEADERS
     DESTINATION include
 )
 install(

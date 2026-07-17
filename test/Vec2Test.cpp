@@ -1,10 +1,11 @@
+#include "VekTu/Linear/Vec2.h"
+
+#include "VekTu/Common.h"
+
 #include <cassert>
 #include <cmath>
 #include <iostream>
 #include <vector>
-
-import Vec2;
-import Common;
 
 template <VectorElement T> using Answers = std::vector<Vec2<T>>;
 

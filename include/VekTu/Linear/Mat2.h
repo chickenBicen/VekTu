@@ -1,15 +1,13 @@
-module;
+#pragma once
+
+#include "Vec2.h"
+#include "VekTu/Common.h"
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 
-export module Mat2;
-
-import Common;
-import Vec2;
-
-export template <VectorElement T> struct Mat2
+template <VectorElement T> struct Mat2
 {
     std::array<T, 4> data;
     Mat2() : data{0, 0, 0, 0} { }
@@ -39,7 +37,9 @@ export template <VectorElement T> struct Mat2
 
 
     static Mat2 rotation(const T theta)
-    { return {std::cos(theta), -std::sin(theta), std::sin(theta), std::cos(theta)}; }
+    {
+        return {std::cos(theta), -std::sin(theta), std::sin(theta), std::cos(theta)};
+    }
 
     Mat2 rotate(const T theta)
     {
@@ -62,7 +62,9 @@ export template <VectorElement T> struct Mat2
     }
 
     Mat2 operator*(const T scalar) const
-    { return {data[0] * scalar, data[1] * scalar, data[2] * scalar, data[3] * scalar}; }
+    {
+        return {data[0] * scalar, data[1] * scalar, data[2] * scalar, data[3] * scalar};
+    }
 
 
     Mat2& operator*=(const Mat2& m)
@@ -73,27 +75,32 @@ export template <VectorElement T> struct Mat2
 
 
     Mat2 operator/(const T scalar) const
-    { return {data[0] / scalar, data[1] / scalar, data[2] / scalar, data[3] / scalar}; }
+    {
+        return {data[0] / scalar, data[1] / scalar, data[2] / scalar, data[3] / scalar};
+    }
 
     Mat2 operator-(const Mat2& other) const
-    { return {data[0] - other[0], data[1] - other[1], data[2] - other[2], data[3] - other[3]}; }
+    {
+        return {data[0] - other[0], data[1] - other[1], data[2] - other[2], data[3] - other[3]};
+    }
 };
 
-export template <VectorElement T> Mat2<T> operator+(const Mat2<T>& a, const Mat2<T> b)
-{ return {a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]}; }
-
-export template <VectorElement T> Vec2<T> operator*(const Mat2<T>& matrix, const Vec2<T>& vector)
+template <VectorElement T> Mat2<T> operator+(const Mat2<T>& a, const Mat2<T> b)
 {
-    return {
-        (matrix[0] * vector.x) + (matrix[1] * vector.y),
-        (matrix[2] * vector.x) + (matrix[3] * vector.y)
-    };
+    return {a[0] + b[0], a[1] + b[1], a[2] + b[2], a[3] + b[3]};
 }
 
-export template <VectorElement T> Mat2<T> operator*(T scalar, const Mat2<T>& matrix)
-{ return {matrix[0] * scalar, matrix[1] * scalar, matrix[2] * scalar, matrix[3] * scalar}; }
+template <VectorElement T> Vec2<T> operator*(const Mat2<T>& matrix, const Vec2<T>& vector)
+{
+    return {(matrix[0] * vector.x) + (matrix[1] * vector.y), (matrix[2] * vector.x) + (matrix[3] * vector.y)};
+}
 
-export using Mat2i = Mat2<int>;
-export using Mat2f = Mat2<float>;
-export using Mat2d = Mat2<double>;
-export using Mat2Byte = Mat2<std::uint8_t>;
+template <VectorElement T> Mat2<T> operator*(T scalar, const Mat2<T>& matrix)
+{
+    return {matrix[0] * scalar, matrix[1] * scalar, matrix[2] * scalar, matrix[3] * scalar};
+}
+
+using Mat2i = Mat2<int>;
+using Mat2f = Mat2<float>;
+using Mat2d = Mat2<double>;
+using Mat2Byte = Mat2<std::uint8_t>;

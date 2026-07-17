@@ -1,13 +1,11 @@
-module;
+#pragma once
+#include "VekTu/Common.h"
 
 #include <cmath>
 #include <cstdint>
 
-export module Vec3;
 
-import Common;
-
-export template <VectorElement T> struct Vec3
+template <VectorElement T> struct Vec3
 {
     T x, y, z;
 
@@ -108,19 +106,19 @@ export template <VectorElement T> struct Vec3
     }
 };
 
-export template <VectorElement T> Vec3<T> operator+(const Vec3<T>& a, const Vec3<T>& b)
+template <VectorElement T> Vec3<T> operator+(const Vec3<T>& a, const Vec3<T>& b)
 {
     return {a.x + b.x, a.y + b.y, a.z + b.z};
 }
 
-export template <VectorElement T> bool operator==(const Vec3<T>& a, const Vec3<T>& b)
+template <VectorElement T> bool operator==(const Vec3<T>& a, const Vec3<T>& b)
 {
     return nearlyEqual(a.x, b.x) && nearlyEqual(a.y, b.y) && nearlyEqual(a.z, b.z);
 }
 
-export template <VectorElement T> bool operator!=(const Vec3<T>& a, const Vec3<T>& b) { return !(a == b); }
+template <VectorElement T> bool operator!=(const Vec3<T>& a, const Vec3<T>& b) { return !(a == b); }
 
-export using Vec3i = Vec3<int>;
-export using Vec3f = Vec3<float>;
-export using Vec3d = Vec3<double>;
-export using Vec3u = Vec3<uint32_t>;
+using Vec3i = Vec3<int>;
+using Vec3f = Vec3<float>;
+using Vec3d = Vec3<double>;
+using Vec3u = Vec3<uint32_t>;

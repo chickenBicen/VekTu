@@ -1,20 +1,16 @@
-module;
+#pragma once
+#include "VekTu/Common.h"
+#include "VekTu/Linear/Vec2.h"
 
 #include <cmath>
 #include <cstdint>
 #include <numbers>
-
-export module Shapes;
-
-import Common;
-import Vec2;
-
-export template <VectorElement T> struct Rectangle;
-export template <VectorElement T> struct Circle;
+template <VectorElement T> struct Rectangle;
+template <VectorElement T> struct Circle;
 
 using namespace std::numbers;
 
-export template <VectorElement T> struct Shape
+template <VectorElement T> struct Shape
 {
     Shape() = default;
     virtual T getArea() const = 0;
@@ -25,7 +21,7 @@ export template <VectorElement T> struct Shape
     virtual bool intersects(const Circle<T>& cirlce) const = 0;
 };
 
-export template <VectorElement T> struct Rectangle : public Shape<T>
+template <VectorElement T> struct Rectangle : public Shape<T>
 {
     Vec2<T> topLeft;
     T width, height;
@@ -74,7 +70,7 @@ export template <VectorElement T> struct Rectangle : public Shape<T>
 };
 
 
-export template <VectorElement T> struct Circle : public Shape<T>
+template <VectorElement T> struct Circle : public Shape<T>
 {
     Vec2<T> center;
     T radius;
@@ -93,23 +89,23 @@ export template <VectorElement T> struct Circle : public Shape<T>
     bool intersects(const Circle<T>& other) { return center.dist(other.center) <= radius + other.radius; }
 };
 
-export template <VectorElement T> bool operator==(const Rectangle<T>& left, const Rectangle<T>& right)
+template <VectorElement T> bool operator==(const Rectangle<T>& left, const Rectangle<T>& right)
 {
     return left.topLeft == right.topLeft && left.getSize() == right.getSize();
 }
 
-export template <VectorElement T> bool operator!=(const Rectangle<T>& left, const Rectangle<T>& right)
+template <VectorElement T> bool operator!=(const Rectangle<T>& left, const Rectangle<T>& right)
 {
     return !(left == right);
 }
 
-export using Rect = Rectangle<int>;
-export using Rectf = Rectangle<float>;
-export using Rectd = Rectangle<double>;
-export using Rect_u = Rectangle<uint8_t>;
+using Rect = Rectangle<int>;
+using Rectf = Rectangle<float>;
+using Rectd = Rectangle<double>;
+using Rect_u = Rectangle<uint8_t>;
 
 
-export using iCircle = Circle<int>;
-export using fCircle = Circle<float>;
-export using dCircle = Circle<double>;
-export using uCircle = Circle<uint8_t>;
+using iCircle = Circle<int>;
+using fCircle = Circle<float>;
+using dCircle = Circle<double>;
+using uCircle = Circle<uint8_t>;
