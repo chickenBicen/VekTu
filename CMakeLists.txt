@@ -15,7 +15,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
-message(STATUS "Vek-Tu Build Type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "VekTu Build Type: ${CMAKE_BUILD_TYPE}")
 
 # Set the version for Vek-Tu
 set(VekTu_Version_Major 0)
@@ -23,30 +23,47 @@ set(VekTu_Version_Minor 1)
 set(VekTu_Version_Patch 0)
 set(VekTu_Version_Status "-dev")
 set(PROJECT_VERSION
-    "${Vek-Tu_Version_Major}.${Vek-Tu_Version_Minor}.${Vek-Tu_Version_Patch}${Vek-Tu_Version_Status}"
+    "${VekTu_Version_Major}.${VekTu_Version_Minor}.${VekTu_Version_Patch}${VekTu_Version_Status}"
 )
 message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION}")
 
-add_library(VekTu)
-add_subdirectory(./test/)
+add_library(
+    VekTu
+)
+
 target_sources(VekTu
     PUBLIC
         FILE_SET CXX_MODULES
+        TYPE CXX_MODULES
+        BASE_DIRS
+            include
         FILES
-            modules/Common.cppm
-            modules/linear.cppm
-            modules/Linear/Vec2.cppm
-            modules/Linear/Vec3.cppm
-            modules/Linear/Vec4.cppm   
-            modules/Linear/Mat2.cppm
-            modules/Linear/Mat3.cppm
-            modules/Geometry/Shapes.cppm
-            
+            include/VekTu/Common.cppm
+            include/VekTu/linear.cppm
+            include/VekTu/Linear/Vec2.cppm
+            include/VekTu/Linear/Vec3.cppm
+            include/VekTu/Linear/Vec4.cppm
+            include/VekTu/Linear/Mat2.cppm
+            include/VekTu/Linear/Mat3.cppm
+            include/VekTu/Geometry/Shapes.cppm
 )
 
 target_include_directories(
     VekTu
-    PRIVATE ${PROJECT_SOURCE_DIR}/includes
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
 )
 
-
+install(
+    TARGETS VekTu
+    EXPORT VekTuTargets
+    FILE_SET CXX_MODULES
+    DESTINATION include
+)
+install(
+    EXPORT VekTuTargets
+    FILE VekTuTargets.cmake
+    NAMESPACE VekTu::
+    DESTINATION lib/cmake/VekTu
+)

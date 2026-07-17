@@ -89,8 +89,10 @@ export template <VectorElement T> struct Mat3
 
 
     Mat3 transpose() const
-    { return {data[0], data[3], data[6], data[1], data[4], data[7], data[2], data[5], data[8]}; }
-    void transposeInPlace()
+    {
+        return {data[0], data[3], data[6], data[1], data[4], data[7], data[2], data[5], data[8]};
+    }
+    Mat3 transposeInPlace()
     {
         *this = transpose();
         return *this;
@@ -101,7 +103,7 @@ export template <VectorElement T> struct Mat3
         assert(det() != 0);
         return (T(1) / det()) * adjugate();
     }
-    void inverseInPlace()
+    Mat3 inverseInPlace()
     {
         *this = inverse();
         return *this;
@@ -110,10 +112,11 @@ export template <VectorElement T> struct Mat3
 
     static Mat3<T> getAffineTranslation(T x, T y) { return {1, 0, x, 0, 1, y, 0, 0, 1}; }
     static Mat3<T> getAffineRotation(const T theta)
-    { return {std::cos(theta), -std::sin(theta), 0, std::sin(theta), std::cos(theta), 0, 0, 0, 1}; }
+    {
+        return {std::cos(theta), -std::sin(theta), 0, std::sin(theta), std::cos(theta), 0, 0, 0, 1};
+    }
 
-    static Mat3<T>
-        getAffineTransformation(T scaleX, T scaleY, T theta, T translationX, T translationY)
+    static Mat3<T> getAffineTransformation(T scaleX, T scaleY, T theta, T translationX, T translationY)
     {
         Mat3<T> scale{scaleX, 0, 0, 0, scaleY, 0, 0, 0, 1};
         Mat3<T> rotation = getAffineRotation(theta);
@@ -191,8 +194,7 @@ export template <VectorElement T> Mat3<T> operator+(const Mat3<T>& first, const 
     };
 }
 
-export template <VectorElement T> Mat3<T> operator*(T scalar, const Mat3<T>& matrix)
-{ return matrix * scalar; }
+export template <VectorElement T> Mat3<T> operator*(T scalar, const Mat3<T>& matrix) { return matrix * scalar; }
 
 
 export template <VectorElement T> Vec3<T> operator*(const Mat3<T>& matrix, const Vec3<T>& vector)
