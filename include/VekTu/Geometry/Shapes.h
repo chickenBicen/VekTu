@@ -10,6 +10,9 @@ template <VectorElement T> struct Circle;
 
 using namespace std::numbers;
 
+namespace vk {
+
+
 template <VectorElement T> struct Shape
 {
     Shape() = default;
@@ -109,3 +112,5 @@ using iCircle = Circle<int>;
 using fCircle = Circle<float>;
 using dCircle = Circle<double>;
 using uCircle = Circle<uint8_t>;
+
+} // namespace vk

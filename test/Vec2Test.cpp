@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 
+using namespace vk;
 template <VectorElement T> using Answers = std::vector<Vec2<T>>;
 
 // Integer test vectors

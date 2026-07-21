@@ -5,6 +5,9 @@
 #include <cmath>
 #include <cstdint>
 
+namespace vk {
+
+
 template <VectorElement T> struct Vec4
 {
     T x, y, z, w;
@@ -111,3 +114,5 @@ using Vec4i = Vec4<int>;
 using Vec4f = Vec4<float>;
 using Vec4d = Vec4<double>;
 using Vec4u = Vec4<uint32_t>;
+
+} // namespace vk

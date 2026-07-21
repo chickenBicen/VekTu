@@ -1,60 +1,69 @@
 cmake_minimum_required(VERSION 3.30)
-project(VekTu)
+project(VekTu VERSION 0.1.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+add_library(VekTu src/utils.cpp)
+
+target_compile_features(VekTu PUBLIC cxx_std_20)
 
 enable_testing()
 
-if(NOT CMAKE_BUILD_TYPE)
-    set(default_build_type "Debug")
-    message(STATUS "Set the build type to `${default_build_type}` as none was specified.")
-    set(CMAKE_BUILD_TYPE ${default_build_type} CACHE STRING "Chooce the build type." FORCE)
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
-    "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+# cache variables for installation destinations
+include(GNUInstallDirs)
+include(CTest)
+
+if(BUILD_TESTING)
+    add_subdirectory(test)
 endif()
-message(STATUS "VekTu Build Type: ${CMAKE_BUILD_TYPE}")
 
-# Set the version for Vek-Tu
-set(VekTu_Version_Major 0)
-set(VekTu_Version_Minor 1)
-set(VekTu_Version_Patch 0)
-set(VekTu_Version_Status "-dev")
-set(PROJECT_VERSION
-    "${VekTu_Version_Major}.${VekTu_Version_Minor}.${VekTu_Version_Patch}${VekTu_Version_Status}"
-)
-message(STATUS "${PROJECT_NAME} version: ${PROJECT_VERSION}")
-
-add_subdirectory(test)
-add_library(
-    VekTu INTERFACE
-)
-
-target_sources(VekTu INTERFACE
-    FILE_SET HEADERS
-    BASE_DIRS include
-    FILES
-        include/VekTu/Common.h
-        include/VekTu/Linear/Vec2.h
-)
 target_include_directories(
     VekTu
-    INTERFACE
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+target_sources(VekTu
+    PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS include
+        FILES
+            include/VekTu/Geometry/AABB.h
+            include/VekTu/Geometry/Shapes.h
+            include/VekTu/Linear/Mat2.h
+            include/VekTu/Linear/Mat3.h
+            include/VekTu/Linear/Mat4.h
+            include/VekTu/Linear/Vec2.h
+            include/VekTu/Linear/Vec3.h
+            include/VekTu/Linear/Vec4.h
+            include/VekTu/Math/Matrix.h
+            include/VekTu/Math/Vector.h
+            include/VekTu/Common.h
+            include/VekTu/Linear.h
+            include/VekTu/utils.h
 )
 
-install(
-    TARGETS VekTu
+install(TARGETS VekTu
     EXPORT VekTuTargets
     FILE_SET HEADERS
-    DESTINATION include
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-install(
-    EXPORT VekTuTargets
+
+
+install(EXPORT VekTuTargets
     FILE VekTuTargets.cmake
     NAMESPACE VekTu::
-    DESTINATION lib/cmake/VekTu
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/VekTu
+    )
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/VekTuConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/VekTu
+)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/VekTuConfig.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/VekTu
 )

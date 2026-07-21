@@ -3,18 +3,41 @@
 #include "Mat2.h"
 #include "Vec3.h"
 #include "VekTu/Common.h"
+#include "VekTu/Linear/Vec2.h"
 
 #include <cassert>
 #include <cmath>
 #include <cstdint>
+#include <type_traits>
+
+namespace vk {
+
 
 template <VectorElement T> struct Mat3
 {
-    std::array<T, 9> data;
+    std::array<std::array<T, 3>, 3> data;
 
-    Mat3() : data{0, 0, 0, 0, 0, 0, 0, 0, 0} { }
+    Mat3() : data{{0, 0, 0}, {0, 0, 0}, {0, 0, 0}} { }
 
-    Mat3(T a, T b, T c, T d, T e, T f, T g, T h, T i) : data{a, b, c, d, e, f, g, h, i} { }
+    Mat3(T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22)
+        : data{{m00, m10, m20}, {m01, m11, m21}, {m02, m12, m22}}
+    {
+    }
+
+    Mat3(const Vec3<T>& a, const Vec3<T>& b, const Vec3<T>& c)
+    {
+        (*this)(0, 0) = a.x;
+        (*this)(1, 0) = a.y;
+        (*this)(2, 0) = a.z;
+
+        (*this)(0, 1) = b.x;
+        (*this)(1, 1) = b.y;
+        (*this)(2, 1) = b.z;
+
+        (*this)(0, 2) = c.x;
+        (*this)(1, 2) = c.y;
+        (*this)(2, 2) = c.z;
+    }
 
     [[nodiscard]] static Mat3 identity() { return {1, 0, 0, 0, 1, 0, 0, 0, 1}; }
 
@@ -23,15 +46,15 @@ template <VectorElement T> struct Mat3
     {
         assert(x < 3 && y < 3);
         switch (y * 3 + x) {
-            case 0 : return Mat2<T>{data[4], data[5], data[7], data[8]}.det();
-            case 1 : return Mat2<T>{data[3], data[5], data[6], data[8]}.det();
-            case 2 : return Mat2<T>{data[3], data[4], data[6], data[7]}.det();
-            case 3 : return Mat2<T>{data[1], data[2], data[7], data[8]}.det();
-            case 4 : return Mat2<T>{data[0], data[2], data[6], data[8]}.det();
-            case 5 : return Mat2<T>{data[0], data[1], data[6], data[7]}.det();
-            case 6 : return Mat2<T>{data[1], data[2], data[4], data[5]}.det();
-            case 7 : return Mat2<T>{data[0], data[2], data[3], data[5]}.det();
-            case 8 : return Mat2<T>{data[0], data[1], data[3], data[4]}.det();
+            case 0 : return Mat2<T>{(*this)(1, 1), (*this)(1, 2), (*this)(2, 1), (*this)(2, 2)}.det();
+            case 1 : return Mat2<T>{(*this)(1, 0), (*this)(1, 2), (*this)(2, 0), (*this)(2, 2)}.det();
+            case 2 : return Mat2<T>{(*this)(1, 0), (*this)(1, 1), (*this)(2, 0), (*this)(2, 1)}.det();
+            case 3 : return Mat2<T>{(*this)(0, 1), (*this)(0, 2), (*this)(2, 1), (*this)(2, 2)}.det();
+            case 4 : return Mat2<T>{(*this)(0, 0), (*this)(0, 2), (*this)(2, 0), (*this)(2, 2)}.det();
+            case 5 : return Mat2<T>{(*this)(0, 0), (*this)(0, 1), (*this)(2, 0), (*this)(2, 1)}.det();
+            case 6 : return Mat2<T>{(*this)(0, 1), (*this)(0, 2), (*this)(1, 1), (*this)(1, 2)}.det();
+            case 7 : return Mat2<T>{(*this)(0, 0), (*this)(0, 2), (*this)(1, 0), (*this)(1, 2)}.det();
+            case 8 : return Mat2<T>{(*this)(0, 0), (*this)(0, 1), (*this)(1, 0), (*this)(1, 1)}.det();
         }
     }
 
@@ -39,13 +62,13 @@ template <VectorElement T> struct Mat3
     {
         Mat3 mat{
             getMinorFromPosition(0, 0),
-            getMinorFromPosition(0, 1),
-            getMinorFromPosition(0, 2),
             getMinorFromPosition(1, 0),
-            getMinorFromPosition(1, 1),
-            getMinorFromPosition(1, 2),
             getMinorFromPosition(2, 0),
+            getMinorFromPosition(0, 1),
+            getMinorFromPosition(1, 1),
             getMinorFromPosition(2, 1),
+            getMinorFromPosition(0, 2),
+            getMinorFromPosition(1, 2),
             getMinorFromPosition(2, 2)
         };
 
@@ -56,15 +79,15 @@ template <VectorElement T> struct Mat3
     {
         Mat3 minorMat = minorMatrix();
         return {
-            minorMat[0],
-            -minorMat[1],
-            minorMat[2],
-            -minorMat[3],
-            minorMat[4],
-            -minorMat[5],
-            minorMat[6],
-            -minorMat[7],
-            minorMat[8]
+            minorMat(0, 0),
+            -minorMat(0, 1),
+            minorMat(0, 2),
+            -minorMat(1, 0),
+            minorMat(1, 1),
+            -minorMat(1, 2),
+            minorMat(2, 0),
+            -minorMat(2, 1),
+            minorMat(2, 2)
         };
     }
 
@@ -73,13 +96,13 @@ template <VectorElement T> struct Mat3
 
     [[nodiscard]] T det() const
     {
-        T term1 = data[0] * data[4] * data[8];
-        T term2 = data[1] * data[5] * data[6];
-        T term3 = data[2] * data[3] * data[7];
+        T term1 = (*this)(0, 0) * (*this)(1, 1) * (*this)(2, 2);
+        T term2 = (*this)(0, 1) * (*this)(1, 2) * (*this)(2, 0);
+        T term3 = (*this)(0, 2) * (*this)(1, 0) * (*this)(2, 1);
 
-        T term4 = data[6] * data[4] * data[2];
-        T term5 = data[7] * data[5] * data[0];
-        T term6 = data[8] * data[3] * data[1];
+        T term4 = (*this)(2, 0) * (*this)(1, 1) * (*this)(0, 2);
+        T term5 = (*this)(2, 1) * (*this)(1, 2) * (*this)(0, 0);
+        T term6 = (*this)(2, 2) * (*this)(1, 0) * (*this)(0, 1);
 
         return (term1 + term2 + term3) - (term4 + term5 + term6);
     }
@@ -87,7 +110,19 @@ template <VectorElement T> struct Mat3
 
     Mat3 transpose() const
     {
-        return {data[0], data[3], data[6], data[1], data[4], data[7], data[2], data[5], data[8]};
+        return {
+            (*this)(0, 0),
+            (*this)(0, 1),
+            (*this)(0, 2),
+
+            (*this)(1, 0),
+            (*this)(1, 1),
+            (*this)(1, 2),
+
+            (*this)(2, 0),
+            (*this)(2, 1),
+            (*this)(2, 2)
+        };
     }
     Mat3 transposeInPlace()
     {
@@ -121,15 +156,45 @@ template <VectorElement T> struct Mat3
 
         return translation * rotation * scale;
     }
-    T& at(size_t index)
+
+    template <VectorElement U> static Mat3<U> getRotationFromAxis(const Vec3<U>& axis, const U angle)
     {
-        assert(index < 9);
-        return data[index];
+        static_assert(std::is_floating_point_v<U>);
+
+        Vec3<U> unit = axis / axis.mag();
+
+        U cosine = std::cos(angle);
+        U sine = std::sin(angle);
+
+        U t = U(1) - cosine;
+
+        Mat3<U> result{};
+
+        result(0, 0) = t * unit.x * unit.x + cosine;
+        result(0, 1) = t * unit.x * unit.y - sine * unit.z;
+        result(0, 2) = t * unit.x * unit.z + sine * unit.y;
+
+        result(1, 0) = t * unit.x * unit.y + sine * unit.z;
+        result(1, 1) = t * unit.y * unit.y + cosine;
+        result(1, 2) = t * unit.y * unit.z - sine * unit.x;
+
+        result(2, 0) = t * unit.x * unit.z - sine * unit.y;
+        result(2, 1) = t * unit.y * unit.z + sine * unit.x;
+        result(2, 2) = t * unit.z * unit.z + cosine;
+
+        return result;
     }
 
-    T& operator[](size_t index) { return at(index); }
+    template <VectorElement U> static Mat3<U> roll(const U angle) { return getRotationFromAxis({1, 0, 0}, angle); }
 
-    const T& operator[](size_t index) const { return at(index); }
+    template <VectorElement U> static Mat3<U> pitch(const U a) { return getRotationFromAxis({0, 1, 0}, a); }
+
+    template <VectorElement U> static Mat3<U> yaw(const U angle) { return getRotationFromAxis({0, 0, 1}, angle); }
+
+
+    T& operator()(size_t row, size_t col) { return data[col][row]; }
+
+    const T& operator()(size_t row, size_t col) const { return data[col][row]; }
 
     Mat3 operator*(const Mat3<T>& other) const
     {
@@ -137,7 +202,7 @@ template <VectorElement T> struct Mat3
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 for (int k = 0; k < 3; k++) {
-                    result[row * 3 + col] += data[row * 3 + k] * other[k * 3 + col];
+                    result(col, row) += (*this)(k, row) * other(col, k);
                 }
             }
         }
@@ -147,15 +212,15 @@ template <VectorElement T> struct Mat3
     Mat3 operator*(const T scalar) const
     {
         return {
-            data[0] * scalar,
-            data[1] * scalar,
-            data[2] * scalar,
-            data[3] * scalar,
-            data[4] * scalar,
-            data[5] * scalar,
-            data[6] * scalar,
-            data[7] * scalar,
-            data[8] * scalar
+            (*this)(0, 0) * scalar,
+            (*this)(0, 1) * scalar,
+            (*this)(0, 2) * scalar,
+            (*this)(1, 0) * scalar,
+            (*this)(1, 1) * scalar,
+            (*this)(1, 2) * scalar,
+            (*this)(2, 0) * scalar,
+            (*this)(2, 1) * scalar,
+            (*this)(2, 2) * scalar
         };
     }
 
@@ -163,15 +228,15 @@ template <VectorElement T> struct Mat3
     Mat3 operator-(const Mat3& other) const
     {
         return {
-            data[0] - other[0],
-            data[1] - other[1],
-            data[2] - other[2],
-            data[3] - other[3],
-            data[4] - other[4],
-            data[5] - other[5],
-            data[6] - other[6],
-            data[7] - other[7],
-            data[8] - other[8]
+            (*this)(0, 0) - other(0, 0),
+            (*this)(0, 1) - other(0, 1),
+            (*this)(0, 2) - other(0, 2),
+            (*this)(1, 0) - other(1, 0),
+            (*this)(1, 1) - other(1, 1),
+            (*this)(1, 2) - other(1, 2),
+            (*this)(2, 0) - other(2, 0),
+            (*this)(2, 1) - other(2, 1),
+            (*this)(2, 2) - other(2, 2)
         };
     }
 };
@@ -179,15 +244,15 @@ template <VectorElement T> struct Mat3
 template <VectorElement T> Mat3<T> operator+(const Mat3<T>& first, const Mat3<T>& second)
 {
     return {
-        first[0] + second[0],
-        first[1] + second[1],
-        first[2] + second[2],
-        first[3] + second[3],
-        first[4] + second[4],
-        first[5] + second[5],
-        first[6] + second[6],
-        first[7] + second[7],
-        first[8] + second[8]
+        first(0, 0) + second(0, 0),
+        first(0, 1) + second(0, 1),
+        first(0, 2) + second(0, 2),
+        first(1, 0) + second(1, 0),
+        first(1, 1) + second(1, 1),
+        first(1, 2) + second(1, 2),
+        first(2, 0) + second(2, 0),
+        first(2, 1) + second(2, 1),
+        first(2, 2) + second(2, 2)
     };
 }
 
@@ -197,9 +262,9 @@ template <VectorElement T> Mat3<T> operator*(T scalar, const Mat3<T>& matrix) { 
 template <VectorElement T> Vec3<T> operator*(const Mat3<T>& matrix, const Vec3<T>& vector)
 {
     Vec3<T> v = vector;
-    v.x = matrix[0] * vector.x + matrix[1] * vector.y + matrix[2] * vector.z;
-    v.y = matrix[3] * vector.x + matrix[4] * vector.y + matrix[5] * vector.z;
-    v.z = matrix[6] * vector.x + matrix[7] * vector.y + matrix[8] * vector.z;
+    v.x = matrix(0, 0) * vector.x + matrix(0, 1) * vector.y + matrix(0, 2) * vector.z;
+    v.y = matrix(1, 0) * vector.x + matrix(1, 1) * vector.y + matrix(1, 2) * vector.z;
+    v.z = matrix(2, 0) * vector.x + matrix(2, 1) * vector.y + matrix(2, 2) * vector.z;
     return v;
 }
 
@@ -207,3 +272,5 @@ using Mat3i = Mat3<int>;
 using Mat3f = Mat3<float>;
 using Mat3d = Mat3<double>;
 using Mat3b = Mat3<uint8_t>;
+
+} // namespace vk

@@ -4,8 +4,10 @@
 #include <cmath>
 #include <cstdint>
 
+namespace vk {
+
 /**
- * @brief 2d vector implementation for graphics and positioning. Only accepts "Vector elements"
+ * \brief 2d vector implementation for graphics and positioning. Only accepts "Vector elements"
  * which are types that can do basic arithmetic operations
  */
 template <VectorElement T> struct Vec2
@@ -50,6 +52,14 @@ template <VectorElement T> struct Vec2
         return v;
     }
 
+    Vec2 rotatedByAngle(const double radians) const
+    {
+        double cos = std::cos(radians);
+        double sin = std::sin(radians);
+
+        return {cos * x - sin * y, sin * x + cos * y};
+    }
+
     Vec2 operator-(const Vec2& other) const { return Vec2(x - other.x, y - other.y); }
     Vec2 operator-() const { return Vec2(-x, -y); }
 
@@ -86,6 +96,12 @@ template <VectorElement T> struct Vec2
     }
 };
 
+
+// #########################################################################
+// ########################### Related functions ###########################
+// #########################################################################
+
+
 template <VectorElement T> Vec2<T> operator*(const T scalar, const Vec2<T>& v)
 {
     return {v.x * scalar, v.y * scalar};
@@ -114,3 +130,5 @@ using Vec2i = Vec2<int>;
 using Vec2f = Vec2<float>;
 using Vec2d = Vec2<double>;
 using Vec2u = Vec2<uint32_t>;
+
+} // namespace vk
